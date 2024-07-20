@@ -1,0 +1,136 @@
+.container {
+  background-color: #e1e7ef;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.wraper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+  width: 380px;
+  margin-top: 20px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.wraper h2 {
+  margin-bottom: 5px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+form input {
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f1f5f9;
+  border: 2px solid transparent;
+  outline: none;
+}
+
+form input:focus {
+  border-color: #007d94;
+}
+
+form label {
+  margin-bottom: 10px;
+}
+
+form button {
+  background-color: #007d94;
+  color: white;
+  outline: none;
+  border: none;
+  height: 35px;
+  font-weight: bold;
+}
+
+form button:hover {
+  background-color: #009dba;
+  cursor: pointer;
+}
+
+form p {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.msgs {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.red {
+  background-color: rgb(227, 126, 126);
+}
+
+.custom-file-input {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #007d94;
+  margin-bottom: 10px;
+  overflow: hidden;
+  text-align: center;
+  background-color: #f1f5f9;
+}
+
+.custom-file-input:hover
+{
+    border-color: #009dba;
+}
+
+.custom-file-input input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.file-info .file-name {
+  margin-right: 10px;
+}
+
+.file-info .remove-file {
+  color: red;
+  cursor: pointer;
+  font-size: 30px;
+  z-index: 1000;
+}
+
+.profie-text
+{
+    color: black;
+}
