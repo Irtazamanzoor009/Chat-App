@@ -1,10 +1,17 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Header from "../../Header";
 import "./register.css";
 import { useForm } from "react-hook-form";
+import { NavLink, useNavigate } from "react-router-dom";
+import UploadFile from "../../../helpers/uploadFile";
+import axios from "axios";
 
 const RegisterPage = () => {
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
   const [fileName, setFileName] = useState("");
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -14,19 +21,54 @@ const RegisterPage = () => {
   } = useForm();
 
   const onsubmit = async (data) => {
-    console.log(data);
+    setIsLoading(true);
+    try {
+      const url = `${import.meta.env.VITE_BACKEND_URL}api/register`;
+      const response = await axios.post(url, data);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
+
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+
+        reset();
+        setFileName("");
+        setValue("profile_pic", "");
+      }, 1000);
+      setTimeout(() => {
+        navigate("/checkemailpage");
+      }, 1200);
+    } catch (error) {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+      setServerError(error.response.data.message);
+      setTimeout(() => {
+        setServerError("");
+      }, 2000);
+    }
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    setFileName(file ? file.name : "");
-    setValue("photo", file);
+    if (file) {
+      setFileName(file ? file.name : "");
+      try {
+        const uploadPhoto = await UploadFile(file);
+        setValue("profile_pic", uploadPhoto.secure_url, {
+          shouldValidate: true,
+        });
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
   };
 
   const handleRemoveFile = () => {
-    console.log("hello")
     setFileName("");
-    setValue("photo", null);
+    setValue("profile_pic", "");
     document.getElementById("photo").value = "";
   };
   return (
@@ -35,6 +77,10 @@ const RegisterPage = () => {
       <div className="container">
         <div className="wraper">
           <h2>Welcome to Chat App</h2>
+          {showSuccessMessage && (
+            <div className="green msgs">User Signed Up Successfully</div>
+          )}
+          {serverError && <div className="red msgs">{serverError}</div>}
           {errors.name && <div className="red msgs">{errors.name.message}</div>}
           {errors.email && (
             <div className="red msgs">{errors.email.message}</div>
@@ -67,14 +113,9 @@ const RegisterPage = () => {
               })}
             />
 
-            <label htmlFor="photo">Photo:</label>
+            <label htmlFor="profile_pic">Photo:</label>
             <div className="custom-file-input">
-              <input
-                type="file"
-                id="photo"
-                {...register("photo")}
-                onChange={handleFileChange}
-              />
+              <input type="file" onChange={handleFileChange} id="profile_pic" />
               {fileName ? (
                 <div className="file-info">
                   <span className="file-name profie-text">{fileName}</span>
@@ -87,9 +128,15 @@ const RegisterPage = () => {
               )}
             </div>
 
-            <button type="submit">Register</button>
+            <button type="submit">
+              Register
+              {isLoading && <i className="fa-solid fa-spinner fa-spin"></i>}
+            </button>
 
-            <p>Already have account? Login</p>
+            <p>
+              Already have account?{" "}
+              <NavLink to="/checkemailpage">Login</NavLink>{" "}
+            </p>
           </form>
         </div>
       </div>

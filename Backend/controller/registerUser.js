@@ -10,7 +10,8 @@ const registerUser = async(req,res)=>{
         {
             return res.status(400).json({
                 message: "User Already Exists",
-                error: true
+                error: true,
+                success: false
             })
         }
         // hash password
@@ -24,7 +25,7 @@ const registerUser = async(req,res)=>{
         }
         const user = new UserModel(payLoad)
         const UserSave = await user.save()
-        return res.status(201).json({
+        return res.status(200).json({
             message: "User Created Successfully",
             data : UserSave,
             success : true

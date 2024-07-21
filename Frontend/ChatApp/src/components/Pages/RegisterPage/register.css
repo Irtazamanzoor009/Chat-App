@@ -1,6 +1,6 @@
 .container {
   background-color: #e1e7ef;
-  height: 100vh;
+  height: 87vh;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -16,7 +16,7 @@
   width: 380px;
   margin-top: 20px;
   border-radius: 10px;
-  padding: 10px;
+  padding: 15px;
 }
 
 .wraper h2 {
@@ -36,7 +36,7 @@ form input {
   margin-bottom: 10px;
   border-radius: 5px;
   background-color: #f1f5f9;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   outline: none;
 }
 
@@ -62,10 +62,28 @@ form button:hover {
   cursor: pointer;
 }
 
+form button i
+{
+  margin-left: 10px;
+}
+
 form p {
   display: flex;
   justify-content: center;
   margin-top: 10px;
+}
+
+p a
+{
+    text-decoration: none;
+    margin-left: 8px;
+    font-weight: bold;
+    color: black;
+}
+
+p a:hover
+{
+    color: #009dba;
 }
 
 .msgs {
@@ -81,11 +99,15 @@ form p {
   background-color: rgb(227, 126, 126);
 }
 
+.green{
+  background-color:#86f189;
+}
+
 .custom-file-input {
   position: relative;
   width: 100%;
   height: 40px;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -124,10 +146,15 @@ form p {
 }
 
 .file-info .remove-file {
-  color: red;
+  color: black;
   cursor: pointer;
   font-size: 30px;
   z-index: 1000;
+}
+
+.file-info .remove-file:hover
+{
+    color: red;
 }
 
 .profie-text
