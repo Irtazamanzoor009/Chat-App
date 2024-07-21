@@ -103,6 +103,11 @@ p a:hover
   background-color:#86f189;
 }
 
+.emailCheckbutton
+{
+  margin-top: 10px;
+}
+
 .custom-file-input {
   position: relative;
   width: 100%;

@@ -1,0 +1,15 @@
+.profile-image {
+  display: flex;
+  justify-content: center;
+}
+
+.profile-image img {
+  border-radius: 50%;
+}
+
+.profile-name
+{
+    font-size: 11px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

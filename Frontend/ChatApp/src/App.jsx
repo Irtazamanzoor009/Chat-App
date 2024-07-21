@@ -4,6 +4,7 @@ import CheckEmailPage from "./components/Pages/Email Page/CheckEmailPage";
 import CheckPasswordPage from "./components/Pages/Password Page/CheckPasswordPage";
 import HomePage from "./components/Pages/HomePage/HomePage";
 import RegisterPage from "./components/Pages/RegisterPage/RegisterPage";
+import ForgotPassword from "./components/Pages/ForgotPassword/ForgotPassword";
 function App() {
   
 
@@ -15,6 +16,7 @@ function App() {
           <Route path="/registerpage" element={<RegisterPage/>}></Route>
           <Route path="/checkemailpage" element={<CheckEmailPage/>}></Route>
           <Route path="/checkpasswordpage" element={<CheckPasswordPage/>}></Route>
+          <Route path="/forgot-password" element={<ForgotPassword/>}></Route>
           <Route
             path="/:userId"
             element={
