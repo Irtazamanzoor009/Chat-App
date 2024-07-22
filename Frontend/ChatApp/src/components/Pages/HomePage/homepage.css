@@ -1,0 +1,213 @@
+.main {
+  display: flex;
+  flex-direction: row;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.side-icon {
+  background-color: #f1f5f9;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: fit-content;
+}
+
+.side-icon i {
+  /* background-color: red; */
+  padding: 13px 3px;
+  width: 100%;
+}
+
+.side-icon i:hover {
+  background-color: #bfc2c5;
+}
+
+.upper a {
+  padding: 10px 0px;
+  color: #1e3050;
+  width: 100%;
+  text-decoration: none;
+}
+
+.active {
+  width: fit-content;
+  padding: 10px 0px;
+  width: fit-content;
+  background-color: #bfc2c5;
+}
+
+.upper {
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.below {
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.search-people {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+}
+
+.top h2 {
+  font-size: 27px;
+  margin-top: 20px;
+  margin-left: 15px;
+}
+
+.top hr {
+  margin-top: 10px;
+  color: #f1f1f1;
+}
+
+.content {
+  margin-top: 50px;
+}
+
+.content i {
+  display: flex;
+  justify-content: center;
+  font-size: 50px;
+}
+
+.content p {
+  /* background-color: red; */
+  width: 85%;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.below button {
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.modal-overlay-set-Index {
+  z-index: 1000;
+}
+
+.modal-overlay-set-Index-2 {
+  z-index: 1005;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  max-width: 80%;
+}
+
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header button {
+  font-size: 35px;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-header button:hover {
+  background-color: rgb(201, 215, 228);
+  border-radius: 20px;
+  /* width: 50px; */
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  margin-top: 10px;
+  /* overflow-y: auto; */
+  /* height: 70vh; */
+}
+
+.img-container 
+{
+    display: flex;
+    justify-content: left;
+    margin-right: 10px;
+}
+
+.edit-buttons
+{
+    display: flex;
+    justify-content: end;
+
+}
+
+.form-hr
+{
+    margin-top: 10px;
+}
+
+.edit-buttons button
+{
+    padding: 10px 20px;
+    border-radius: 7px;
+    margin-top: 10px;
+}
+
+h3
+{
+    margin-bottom: 15px;
+}
+
+.downer
+{
+    display: flex;
+    flex-direction: row;
+    /* align-items: center; */
+}
+
+
+
+.custom-file-input {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #007d94;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-align: center;
+    background-color: #f1f5f9;
+  }

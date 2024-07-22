@@ -6,12 +6,16 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import person from "../../../assets/person.png";
 import Avatar from "../../Avatar";
+import { useDispatch } from "react-redux";
+import { setToken } from "../../../redux/userSlice";
 
 const CheckPasswordPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -44,6 +48,8 @@ const CheckPasswordPage = () => {
           setIsLoading(false);
         }, 300);
         reset();
+        dispatch(setToken(response?.data?.token))
+        localStorage.setItem('token',response?.data?.token)
         navigate('/')
       }
 
