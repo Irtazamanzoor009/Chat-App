@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, setOnlineUser, setUser } from "../../../redux/userSlice";
+import { logout, setOnlineUser, setsocketConnection, setUser } from "../../../redux/userSlice";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./homepage.css";
 import Avatar from "../../Avatar";
@@ -149,6 +149,8 @@ const HomePage = ({ ischat }) => {
       dispatch(setOnlineUser(data))
       
     })
+
+    dispatch(setsocketConnection(socketConnection))
     
     return()=>{
       socketConnection.disconnect()

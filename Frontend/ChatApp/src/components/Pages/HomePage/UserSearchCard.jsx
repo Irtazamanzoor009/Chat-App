@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import Avatar from "../../Avatar";
 import "./search.css";
 
-const UserSearchCard = ({userId, key, user, onclose }) => {
+const UserSearchCard = ({userId, user, onclose }) => {
   return (
     <>
-      <div key={key} className="search-upper">
+      <div className="search-upper">
         <hr className="search-hr" />
         <Link to={'/'+user?._id} onClick={onclose} className="search-main">
           <div className="search-image">

@@ -2,4 +2,134 @@
 {
     background-color: #f1f5f9;
     width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #f0f2f5;
+    height: 10%;
+    padding: 10px;
+    align-items: center;
+    text-align: center;
+}
+.image
+{
+    /* background-color: red; */
+    display: flex;
+    justify-content: center;
+}
+
+.right-icon
+{
+    margin-right: 10px;
+}
+
+.user-detail
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.green-bg{
+    color: green;
+    cursor: default;
+}
+.gray-bg{
+    color: #90939a;
+    cursor: default;
+}
+.name-content h2
+{
+    margin-left: 10px;    
+    font-size: 20px;
+}
+.name-content p
+{
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items:flex-start;
+    margin-left: 13px;
+}
+.chat-section
+{
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: yellow;
+    background: url('../assets/wallpaper.jpeg');
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+}
+
+.chat-box
+{
+    background-color: #f0f2f5;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.chat-box-content
+{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    
+}
+.plus-icon, .send-message {
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.plus-icon {
+    margin-right: 10px;
+}
+
+.send-message {
+    margin-left: 10px;
+}
+
+.enter-message {
+    flex-grow: 1;
+}
+
+.enter-message input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: white;
+    outline: none;
+}
+
+
+
+.chat-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-section::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+.chat-section::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 10px;
+}
+
+.chat-section::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }
