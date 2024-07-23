@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, setUser } from "../../../redux/userSlice";
+import { logout, setOnlineUser, setUser } from "../../../redux/userSlice";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./homepage.css";
 import Avatar from "../../Avatar";
@@ -13,9 +13,11 @@ import messagelogo from "../../../assets/message logo.png";
 import UserSearchCard from "./UserSearchCard";
 import _ from "lodash";
 import MessagePage from "../../MessagePage";
+import io from 'socket.io-client'
 
 const HomePage = ({ ischat }) => {
   const user = useSelector((state) => state.user);
+  // console.log(user)
   const [InfoData, setInfoData] = useState({
     name: "",
     profile_pic: "",
@@ -34,7 +36,7 @@ const HomePage = ({ ischat }) => {
 
   const fetchUserDetails = async () => {
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}api/user-details`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/user-details`;
       const response = await axios({
         url: url,
         withCredentials: true,
@@ -82,7 +84,7 @@ const HomePage = ({ ischat }) => {
     console.log(InfoData);
     try {
       console.log("try");
-      const url = `${import.meta.env.VITE_BACKEND_URL}api/update-user`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/update-user`;
       const response = await axios({
         method: "post",
         url: url,
@@ -113,21 +115,12 @@ const HomePage = ({ ischat }) => {
     setsearch(value);
   };
 
-  // const handleSearchUser = async () => {
-  //   try {
-  //     const url = `${import.meta.env.VITE_BACKEND_URL}api/search-user`;
-  //     const response = await axios.post(url, search);
-
-  //     setuserlist(response?.data?.data);
-  //   } catch (error) {
-  //     toast.error(error?.reponse?.data?.message);
-  //   }
-  // };
+  
 
   const handleSearchUser = useCallback(
     _.debounce(async (searchTerm) => {
       try {
-        const url = `${import.meta.env.VITE_BACKEND_URL}api/search-user`;
+        const url = `${import.meta.env.VITE_BACKEND_URL}/api/search-user`;
         const response = await axios.post(url, { search: searchTerm });
 
         setuserlist(response?.data?.data);
@@ -142,7 +135,25 @@ const HomePage = ({ ischat }) => {
     handleSearchUser(search);
   }, [search, handleSearchUser]);
 
-  console.log("Search User", userlist);
+  // socket connection
+
+  useEffect(() => {
+    const socketConnection = io(import.meta.env.VITE_BACKEND_URL,{
+      auth:{
+        token : localStorage.getItem('token')
+      }
+    })
+
+    socketConnection.on('onlineUser',(data)=>{
+      console.log(data)
+      dispatch(setOnlineUser(data))
+      
+    })
+    
+    return()=>{
+      socketConnection.disconnect()
+    }
+  }, []);
 
   return (
     <>
@@ -171,7 +182,7 @@ const HomePage = ({ ischat }) => {
                 title={user.name}
                 className="btn-profile"
               >
-                <Avatar width={30} height={30} imageURL={user.profile_pic} />
+                <Avatar width={30} height={30} imageURL={user.profile_pic} userId={user._id} />
               </button>
               <i
                 title="logout"
@@ -265,6 +276,7 @@ const HomePage = ({ ischat }) => {
                 <UserSearchCard
                   key={user._id}
                   user={user}
+                  userId={user._id}
                   onclose={() => setviewUsers(false)}
                 />
               );

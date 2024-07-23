@@ -34,7 +34,7 @@ const CheckPasswordPage = () => {
   const onsubmit = async (data) => {
     setIsLoading(true);
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}api/checkPassword`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/checkPassword`;
       const response = await axios({
         method: 'post',
         url: url,

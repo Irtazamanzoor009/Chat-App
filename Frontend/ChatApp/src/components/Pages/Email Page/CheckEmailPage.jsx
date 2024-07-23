@@ -21,9 +21,10 @@ const CheckEmailPage = () => {
   const onsubmit = async (data) => {
     setIsLoading(true);
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}api/checkEmail`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/checkEmail`;
       const response = await axios.post(url, data);
-      if (response.data.success) {
+      console.log(response)
+      if (response?.data?.success) {
         setTimeout(() => {
           setIsLoading(false);
         }, 300);
@@ -37,7 +38,8 @@ const CheckEmailPage = () => {
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
-      setServerError(error.response.data.message);
+      console.log(error)
+      setServerError(error.response?.data?.message);
       setTimeout(() => {
         setServerError("");
       }, 2000);

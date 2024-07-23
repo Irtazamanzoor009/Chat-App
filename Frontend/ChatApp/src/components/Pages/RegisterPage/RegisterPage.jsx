@@ -24,7 +24,7 @@ const RegisterPage = () => {
   const onsubmit = async (data) => {
     setIsLoading(true);
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}api/register`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/register`;
       const response = await axios.post(url, data);
       setTimeout(() => {
         setIsLoading(false);
