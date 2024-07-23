@@ -5,7 +5,8 @@ const checkEmail = require("../controller/checkEmail")
 const checkPassword = require("../controller/checkPassword")
 const UserDetails = require("../controller/UserDetails")
 const logout = require("../controller/logout")
-const UpdateUser = require("../controller/updateUserDetails")
+const UpdateUser = require("../controller/updateUserDetails");
+const SearchUser = require("../controller/searchUser");
 
 router.post("/register", registerUser);
 
@@ -18,5 +19,7 @@ router.get('/user-details',UserDetails)
 router.get('/logout',logout)
 
 router.post('/update-user',UpdateUser)
+
+router.post('/search-user', SearchUser)
 
 module.exports = router

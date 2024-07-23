@@ -22,7 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/registerpage" element={<RegisterPage />}></Route>
-          <Route path="/checkemailpage" element={<CheckEmailPage />}></Route>
+          <Route path="/checkemailpage" element={<CheckEmailPage/>}></Route>
           <Route
             path="/checkpasswordpage"
             element={<CheckPasswordPage />}
@@ -31,11 +31,9 @@ function App() {
           <Route
             path="/:userId"
             element={
-              <div
-                style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}
-              >
-                <HomePage />
-                <MessagePage />
+              <div>
+                <HomePage ischat={true} />
+                {/* <MessagePage /> */}
               </div>
             }
           />

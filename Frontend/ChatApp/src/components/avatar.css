@@ -1,6 +1,6 @@
 .profile-image {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 .profile-image img {

@@ -166,3 +166,10 @@ p a:hover
 {
     color: black;
 }
+
+.person-logo
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

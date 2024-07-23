@@ -8,6 +8,7 @@ import person from "../../../assets/person.png";
 import Avatar from "../../Avatar";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../../redux/userSlice";
+import { toast } from "react-hot-toast";
 
 const CheckPasswordPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +51,7 @@ const CheckPasswordPage = () => {
         reset();
         dispatch(setToken(response?.data?.token))
         localStorage.setItem('token',response?.data?.token)
+        toast.success("User Verified")
         navigate('/')
       }
 

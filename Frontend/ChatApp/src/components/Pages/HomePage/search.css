@@ -1,0 +1,32 @@
+.search-upper a
+{
+    text-decoration: none;
+    color: black;
+}
+.search-main
+{
+    display: flex;
+    flex-direction: row;
+    height: max-content;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+.search-main:hover
+{
+    background-color: #bfc2c5;
+    cursor: pointer;
+    /* border-radius: 5px; */
+}
+
+.search-image
+{
+   margin-right: 20px;
+}
+
+.search-user-name
+{
+    font-weight: bold;
+
+}
+

@@ -1,32 +1,5 @@
-.header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0px 1px gray;
+.message-main
+{
+    background-color: #f1f5f9;
+    width: 100%;
 }
-
-.message-container {
-  background-color: #f1f5f9;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.message-wraper {
-  display: flex;
-  margin: auto;
-  flex-direction: column;
-}
-
-.message-container img {
-  margin: auto;
-  width: 280px;
-  height: 200px;
-}
-
-.message-container p {
-  margin: auto;
-}
-
-

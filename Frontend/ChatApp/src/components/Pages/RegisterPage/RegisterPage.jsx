@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import UploadFile from "../../../helpers/uploadFile";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const RegisterPage = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -37,9 +38,8 @@ const RegisterPage = () => {
         setFileName("");
         setValue("profile_pic", "");
       }, 1000);
-      setTimeout(() => {
-        navigate("/checkemailpage");
-      }, 1200);
+      toast.success("User Registered Successfully")
+      navigate("/checkemailpage");
     } catch (error) {
       setTimeout(() => {
         setIsLoading(false);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, setUser } from "../../../redux/userSlice";
@@ -8,16 +8,27 @@ import Avatar from "../../Avatar";
 import Modal from "./Modal";
 import { useForm } from "react-hook-form";
 import UploadFile from "../../../helpers/uploadFile";
-import toast from 'react-hot-toast'
+import toast from "react-hot-toast";
+import messagelogo from "../../../assets/message logo.png";
+import UserSearchCard from "./UserSearchCard";
+import _ from "lodash";
+import MessagePage from "../../MessagePage";
 
-const HomePage = () => {
+const HomePage = ({ ischat }) => {
   const user = useSelector((state) => state.user);
   const [InfoData, setInfoData] = useState({
     name: "",
     profile_pic: "",
   });
   const [showProfileInfo, setshowProfileInfo] = useState(false);
+  const [viewUsers, setviewUsers] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // all users in message section
+  const [allUsers, setallUsers] = useState([]);
+  // all users in search menu
+  const [userlist, setuserlist] = useState([]);
+  const [search, setsearch] = useState("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -53,7 +64,7 @@ const HomePage = () => {
   const handleUploadPhoto = async (event) => {
     const file = event.target.files[0];
 
-    setIsLoading(true)
+    setIsLoading(true);
     const uploadPhoto = await UploadFile(file);
     setTimeout(() => {
       setInfoData((prev) => {
@@ -61,35 +72,31 @@ const HomePage = () => {
           ...prev,
           profile_pic: uploadPhoto?.url,
         };
-      });      
-      setIsLoading(false)
+      });
+      setIsLoading(false);
     }, 300);
   };
 
-  const handleSubmitInfoBox = async(e) => {
+  const handleSubmitInfoBox = async (e) => {
     e.preventDefault();
-    console.log(InfoData)
-    try
-    {
-      console.log('try')
-      const url = `${import.meta.env.VITE_BACKEND_URL}api/update-user`
+    console.log(InfoData);
+    try {
+      console.log("try");
+      const url = `${import.meta.env.VITE_BACKEND_URL}api/update-user`;
       const response = await axios({
-        method:'post',
-        url:url,
-        data:InfoData,
-        withCredentials:true
-      })
-      console.log(response.data)
-      if(response.data.success)
-      {
-        dispatch(setUser(response.data.data))
+        method: "post",
+        url: url,
+        data: InfoData,
+        withCredentials: true,
+      });
+      console.log(response.data);
+      if (response.data.success) {
+        dispatch(setUser(response.data.data));
       }
-      toast.success(response?.data?.message)
-    }
-    catch(error)
-    {
-      console.log(error)
-      toast.error(error?.response?.data?.message)
+      toast.success(response?.data?.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -101,48 +108,103 @@ const HomePage = () => {
     });
   };
 
+  const handlesearch = (e) => {
+    const value = e.target.value;
+    setsearch(value);
+  };
+
+  // const handleSearchUser = async () => {
+  //   try {
+  //     const url = `${import.meta.env.VITE_BACKEND_URL}api/search-user`;
+  //     const response = await axios.post(url, search);
+
+  //     setuserlist(response?.data?.data);
+  //   } catch (error) {
+  //     toast.error(error?.reponse?.data?.message);
+  //   }
+  // };
+
+  const handleSearchUser = useCallback(
+    _.debounce(async (searchTerm) => {
+      try {
+        const url = `${import.meta.env.VITE_BACKEND_URL}api/search-user`;
+        const response = await axios.post(url, { search: searchTerm });
+
+        setuserlist(response?.data?.data);
+      } catch (error) {
+        toast.error(error?.response?.data?.message);
+      }
+    }, 300),
+    [] // 300 ms debounce delay
+  );
+
+  useEffect(() => {
+    handleSearchUser(search);
+  }, [search, handleSearchUser]);
+
+  console.log("Search User", userlist);
+
   return (
     <>
-      <div className="main">
-        <div className="side-icon">
-          <div className="upper">
-            <NavLink
-              to="/chat"
-              className={({ isActive }) => `icon  ${isActive ? "active" : ""}`}
-            >
-              <i title="Chat" className="fa-solid fa-message-dots"></i>
-            </NavLink>
-            <NavLink
-              to="/user"
-              className={({ isActive }) => `icon  ${isActive ? "active" : ""}`}
-            >
-              <i title="Add User" className=" fa-solid fa-user-plus"></i>
-            </NavLink>
+      <div className="main-cointainer">
+        <div className="main">
+          <div className="side-icon">
+            <div className="upper">
+              <NavLink
+                to="/chat"
+                className={({ isActive }) =>
+                  `icon  ${isActive ? "active" : ""}`
+                }
+              >
+                <i title="Chat" className="fa-solid fa-message-dots"></i>
+              </NavLink>
+
+              <i
+                title="Add User"
+                onClick={() => setviewUsers(true)}
+                className=" fa-solid fa-user-plus"
+              ></i>
+            </div>
+            <div className="below">
+              <button
+                onClick={OpenInfoBox}
+                title={user.name}
+                className="btn-profile"
+              >
+                <Avatar width={30} height={30} imageURL={user.profile_pic} />
+              </button>
+              <i
+                title="logout"
+                className="icon fa-solid fa-left-from-bracket"
+              ></i>
+            </div>
           </div>
-          <div className="below">
-            <button
-              onClick={OpenInfoBox}
-              title={user.name}
-              className="btn-profile"
-            >
-              <Avatar width={30} height={30} imageURL={user.profile_pic} />
-            </button>
-            <i
-              title="logout"
-              className="icon fa-solid fa-left-from-bracket"
-            ></i>
+          <div className="search-people">
+            <div className="top">
+              <h2>Message</h2>
+              <hr />
+            </div>
+            <div className="content">
+              {allUsers.length === 0 ? (
+                <div className="content-inner">
+                  <i className="fa-solid fa-arrow-up-left"></i>
+                  <p>Explore users to start a conversation with.</p>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         </div>
-        <div className="search-people">
-          <div className="top">
-            <h2>Message</h2>
-            <hr />
+        {!ischat ? <div className="message-section">
+          <div className="message-container">
+            <div className="message-wraper">
+              <img src={messagelogo} alt="logo" />
+              <p>Select user to send message</p>
+            </div>
           </div>
-          <div className="content">
-            <i className="fa-solid fa-arrow-up-left"></i>
-            <p>Explore users to start a conversation with.</p>
-          </div>
-        </div>
+        </div>: <MessagePage/>}
+        
       </div>
 
       <Modal
@@ -167,14 +229,48 @@ const HomePage = () => {
             </div>
             <div className="custom-file-input">
               <input type="file" onChange={handleUploadPhoto} />
-              <span>Change Photo {isLoading && <i className="fa-solid fa-spinner fa-spin"></i>}</span>
+              <span>
+                Change Photo{" "}
+                {isLoading && <i className="fa-solid fa-spinner fa-spin"></i>}
+              </span>
             </div>
           </div>
           <hr className="form-hr" />
           <div className="edit-buttons">
-            <button onClick={handleSubmitInfoBox} type="submit">Save</button>
+            <button onClick={handleSubmitInfoBox} type="submit">
+              Save
+            </button>
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        show={viewUsers}
+        onClose={() => setviewUsers(false)}
+        title="Search Users"
+      >
+        <div className="search-user-form">
+          <input
+            type="search"
+            placeholder="Search User"
+            onChange={handlesearch}
+          />
+        </div>
+        <div className="user-list">
+          {userlist.length === 0 ? (
+            <div className="user-list-text">No User Present</div>
+          ) : (
+            userlist.map((user, index) => {
+              return (
+                <UserSearchCard
+                  key={user._id}
+                  user={user}
+                  onclose={() => setviewUsers(false)}
+                />
+              );
+            })
+          )}
+        </div>
       </Modal>
     </>
   );
