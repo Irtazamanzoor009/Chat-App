@@ -4,13 +4,16 @@ import { useParams } from "react-router-dom";
 import messagelogo from "../assets/message logo.png";
 import { useSelector } from "react-redux";
 import Avatar from "./Avatar";
+import UploadFile from "../helpers/uploadFile";
 
 const MessagePage = () => {
   const params = useParams();
   const socketConnection = useSelector(
     (state) => state?.user?.socketConnection
   );
-  const user = useSelector(state=> state?.user)
+  const user = useSelector((state) => state?.user);
+  const [plusClicked, setplusClicked] = useState(false);
+  const [IsLoading, setIsLoading] = useState(false);
 
   const [userdata, setuserdata] = useState({
     _id: "",
@@ -20,7 +23,11 @@ const MessagePage = () => {
     online: false,
   });
 
-  
+  const [message, setmessage] = useState({
+    text: "",
+    imgUrl: "",
+    videoUrl: ""
+  });
 
   useEffect(() => {
     if (socketConnection && params.userId) {
@@ -30,7 +37,45 @@ const MessagePage = () => {
         console.log("User data received:", data);
       });
     }
-  }, [socketConnection, params.userId,user]);
+  }, [socketConnection, params.userId, user]);
+
+  const handleplusClicked = () => {
+    setplusClicked(!plusClicked);
+  };
+
+  const handleUploadImage = async(e)=>
+  {
+    const file = e.target.files[0];
+
+    setIsLoading(true);
+    const uploadPhoto = await UploadFile(file);
+    setTimeout(() => {
+      setmessage((prev) => {
+        return {
+          ...prev,
+          imgUrl: uploadPhoto?.url,
+        };
+      });
+      setIsLoading(false);
+    }, 300);
+  }
+
+  const handleUploadVideo = async(e)=>
+  {
+    const file = e.target.files[0];
+
+    setIsLoading(true);
+    const uploadPhoto = await UploadFile(file);
+    setTimeout(() => {
+      setmessage((prev) => {
+        return {
+          ...prev,
+          videoUrl: uploadPhoto?.url,
+        };
+      });
+      setIsLoading(false);
+    }, 300);
+  }
 
   return (
     <>
@@ -61,9 +106,31 @@ const MessagePage = () => {
         <section className="chat-section">a</section>
         <section className="chat-box">
           <div className="chat-box-content">
-            <div className="plus-icon">
+            {plusClicked && (
+              <div className="sent-options">
+                <form className="plus-form" action="">
+                  <label className="upload up-img" htmlFor="uploadImage">
+                    <div>
+                      <i class="u-img fa-regular fa-image"></i>
+                    </div>
+                    <p>Image</p>
+                  </label>
+                  <label className="upload up-vid" htmlFor="uploadVideo">
+                    <div>
+                      <i class="u-vid fa-solid fa-video"></i>
+                    </div>
+                    <p>Video</p>
+                  </label>
+
+                  <input type="file" id="uploadImage" onChange={handleUploadImage}/>
+                  <input type="file" id="uploadVideo" onChange={handleUploadVideo}/>
+                </form>
+              </div>
+            )}
+            <div className={`plus-icon ${plusClicked && "isactive"}`} onClick={handleplusClicked}>
               <i class="fa-solid fa-plus"></i>
             </div>
+
             <div className="enter-message">
               <input type="text" placeholder="Type a message" />
             </div>
