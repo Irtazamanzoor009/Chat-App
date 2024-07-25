@@ -43,6 +43,13 @@ const HomePage = ({ ischat }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const handleLogOut = ()=>{
+    dispatch(logout())
+    navigate('/checkemailpage')
+    toast.success("User Log Out Successfully")
+    localStorage.clear()
+  }
+
   useEffect(() => {
     if (socketConnection) {
       socketConnection.emit("sidebar", user._id);
@@ -68,12 +75,12 @@ const HomePage = ({ ischat }) => {
             };
           }
         });
-        console.log("COnversation Data: ",ConversationData)
+        console.log("COnversation Data: ", ConversationData);
         // console.log("Conversation Last Msg:",ConversationData?.lastMsg)
         setallUsers(ConversationData);
       });
     }
-  }, [socketConnection, user]);
+  }, [socketConnection, user, allUsers]);
 
   const fetchUserDetails = async () => {
     try {
@@ -93,7 +100,14 @@ const HomePage = ({ ischat }) => {
   };
 
   useEffect(() => {
-    fetchUserDetails();
+    if(localStorage.getItem('token'))
+    {
+      fetchUserDetails();
+    }
+    else if(!localStorage.getItem('token'))
+    {
+      navigate('/checkemailpage')
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -229,7 +243,7 @@ const HomePage = ({ ischat }) => {
                   userId={user._id}
                 />
               </button>
-              <i
+              <i onClick={handleLogOut}
                 title="logout"
                 className="icon fa-solid fa-left-from-bracket"
               ></i>
@@ -247,30 +261,55 @@ const HomePage = ({ ischat }) => {
                   <p>Explore users to start a conversation with.</p>
                 </div>
               ) : (
-                
                 allUsers.map((conv, index) => {
-                  return(
+                  return (
                     <>
-                    <div className="sidebar-user-section" key={conv?._id}>
-                      <div className="sidebar-image">
-                        <Avatar imageURL={conv?.userDetails?.profile_pic} width={45} height={45}/>
+                      <div className="sidebar-nav">
+                        <NavLink
+                          to={"/" + conv?.userDetails?._id}
+                          className="sidebar-user-section"
+                          key={conv?._id}
+                        >
+                          <div className="sidebar-parent">
+                            <div className="sidebar-image">
+                              <Avatar
+                                imageURL={conv?.userDetails?.profile_pic}
+                                width={45}
+                                height={45}
+                              />
+                            </div>
+                            <div className="name-msg-content">
+                              <h2>{conv?.userDetails?.name}</h2>
+                              {conv?.lastMsg?.imageUrl && (
+                                <div className="sidebar-msg-image">
+                                  <i class="fa-solid fa-camera"></i>{" "}
+                                  <p>Image</p>{" "}
+                                </div>
+                              )}
+                              {conv?.lastMsg?.videoUrl && (
+                                <p className="sidebar-msg-image">
+                                  <i class="fa-solid fa-video"></i> Video
+                                </p>
+                              )}
+                              <p className="text-msg-shown">
+                                {conv?.lastMsg?.text}
+                              </p>
+                              {/* <p>{conv?.userDetails?.lastMsg?.text}</p> */}
+                            </div>
+                            <div className="sidebar-date-section">
+                              <p className="date-sidebar">
+                                {moment(conv?.lastMsg?.updatedAt).format("LT")}
+                              </p>
+                              {conv?.UnseenMsg !== 0 && (
+                                <p className="Unread">{conv?.UnseenMsg}</p>
+                              )}
+                            </div>
+                          </div>
+                        </NavLink>
+                        {/* <hr className="side-bar-hr" /> */}
                       </div>
-                      <div className="name-msg-content">
-                        <h2>{conv?.userDetails?.name}</h2>
-                        {conv?.lastMsg?.imageUrl && <div className="sidebar-msg-image"><i class="fa-solid fa-camera"></i> <p>Image</p> </div>}
-                        {conv?.lastMsg?.videoUrl && <p className="sidebar-msg-image"><i class="fa-solid fa-video"></i> Video</p>}
-                        <p>{conv?.lastMsg?.text}</p>
-                        {/* <p>{conv?.userDetails?.lastMsg?.text}</p> */}
-                      </div>
-                      <div className="sidebar-date-section">
-                        <p className="date-sidebar">{moment(conv?.lastMsg?.updatedAt).format('LT')}</p>
-                        {conv?.UnseenMsg !== 0 && <p className="Unread">{conv?.UnseenMsg}</p>}
-                        
-                      </div>
-                    </div>
-                    {/* <hr className="side-bar-hr" /> */}
                     </>
-                  )
+                  );
                 })
               )}
             </div>

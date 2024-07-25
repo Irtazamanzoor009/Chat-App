@@ -44,6 +44,9 @@ const MessagePage = () => {
   useEffect(() => {
     if (socketConnection && params.userId) {
       socketConnection.emit("messagepage", params.userId);
+
+      socketConnection.emit('seen',params.userId)
+
       socketConnection.on("message-user", (data) => {
         setuserdata(data);
         console.log("User data received:", data);

@@ -8,6 +8,7 @@ const {
   MessageModel,
 } = require("../Models/ConversationModel");
 require("dotenv").config();
+const GetConvsersation = require("../helpers/GetConversation");
 
 const app = express();
 
@@ -112,39 +113,56 @@ io.on("connection", async (socket) => {
         .populate("messages")
         .sort({ updatedAt: -1 });
 
-      io.to(data?.sender).emit("message", getConversationMessage?.messages || []);
-      io.to(data?.receiver).emit("message", getConversationMessage?.messages || []);
+      io.to(data?.sender).emit(
+        "message",
+        getConversationMessage?.messages || []
+      );
+      io.to(data?.receiver).emit(
+        "message",
+        getConversationMessage?.messages || []
+      );
+
+      // send latest conversation
+      const convsersationSender = await GetConvsersation(data?.sender);
+      const convsersationReciever = await GetConvsersation(data?.receiver);
+
+      io.to(data?.sender).emit("sideBarConversation", convsersationSender);
+      io.to(data?.receiver).emit("sideBarConversation", convsersationReciever);
     });
 
     // side bar messages
     socket.on("sidebar", async (CurrentUserId) => {
       console.log("Side Bar Id: ", CurrentUserId);
+      const convsersation = await GetConvsersation(CurrentUserId);
+      socket.emit("sideBarConversation", convsersation);
+    });
 
-      if (CurrentUserId) {
-        const CurrentUserConversations = await ConversationModel.find({
-          $or: [{ sender: CurrentUserId }, { reciever: CurrentUserId }],
-        }).sort({ updatedAt: -1 })
-        .populate("messages").populate("sender").populate("receiver")
+    //seen messages
+    socket.on("seen", async (msgByUserId) => {
+      let conversation = await ConversationModel.findOne({
+        $or: [
+          { sender: userdetails?._id, receiver: msgByUserId },
+          { sender: msgByUserId, receiver: userdetails?._id },
+        ],
+      });
 
-        // console.log("Current User Conversation", CurrentUserConversations);
+      const ConversationMessagesId = conversation?.messages || [];
+      const updateMessages = await MessageModel.updateMany(
+        {
+          _id: { $in: ConversationMessagesId },
+          msgByUserId: msgByUserId,
+        },
+        {
+          $set: {seen:true}
+        }
+      );
 
-        const ConversationPayload = CurrentUserConversations.map((Convmsg) => {
-          const CountUnSeenMsg = Convmsg.messages.reduce(
-            (prev, curr) => prev + (curr.seen ? 0 : 1),
-            0
-          );
+      // send latest conversation
+      const convsersationSender = await GetConvsersation(userdetails?._id?.toString());
+      const convsersationReciever = await GetConvsersation(msgByUserId);
 
-          return {
-            _id: Convmsg?._id,
-            sender: Convmsg?.sender,
-            receiver: Convmsg?.receiver,
-            UnseenMsg: CountUnSeenMsg,
-            lastMsg: Convmsg.messages[Convmsg?.messages?.length - 1],
-          };
-        });
-
-        socket.emit("sideBarConversation", ConversationPayload);
-      }
+      io.to(userdetails?._id?.toString()).emit("sideBarConversation", convsersationSender);
+      io.to(msgByUserId).emit("sideBarConversation", convsersationReciever);
     });
 
     // Handle disconnect event
