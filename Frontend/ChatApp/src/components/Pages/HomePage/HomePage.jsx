@@ -1,7 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, setOnlineUser, setsocketConnection, setUser } from "../../../redux/userSlice";
+import {
+  logout,
+  setOnlineUser,
+  setsocketConnection,
+  setUser,
+} from "../../../redux/userSlice";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./homepage.css";
 import Avatar from "../../Avatar";
@@ -13,9 +18,13 @@ import messagelogo from "../../../assets/message logo.png";
 import UserSearchCard from "./UserSearchCard";
 import _ from "lodash";
 import MessagePage from "../../MessagePage";
-import io from 'socket.io-client'
+import io from "socket.io-client";
+import moment from "moment";
 
 const HomePage = ({ ischat }) => {
+  const socketConnection = useSelector(
+    (state) => state?.user?.socketConnection
+  );
   const user = useSelector((state) => state.user);
   // console.log(user)
   const [InfoData, setInfoData] = useState({
@@ -33,6 +42,38 @@ const HomePage = ({ ischat }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (socketConnection) {
+      socketConnection.emit("sidebar", user._id);
+      socketConnection.on("sideBarConversation", (allMessages) => {
+        console.log("Side bar messages:::", allMessages);
+        const ConversationData = allMessages.map((ConversationUser, index) => {
+          if (
+            ConversationUser?.sender?._id === ConversationUser?.receiver?._id
+          ) {
+            return {
+              ...ConversationUser,
+              userDetails: ConversationUser?.sender,
+            };
+          } else if (ConversationUser?.receiver?._id !== user?._id) {
+            return {
+              ...ConversationUser,
+              userDetails: ConversationUser?.receiver,
+            };
+          } else {
+            return {
+              ...ConversationUser,
+              userDetails: ConversationUser?.sender,
+            };
+          }
+        });
+        console.log("COnversation Data: ",ConversationData)
+        // console.log("Conversation Last Msg:",ConversationData?.lastMsg)
+        setallUsers(ConversationData);
+      });
+    }
+  }, [socketConnection, user]);
 
   const fetchUserDetails = async () => {
     try {
@@ -115,8 +156,6 @@ const HomePage = ({ ischat }) => {
     setsearch(value);
   };
 
-  
-
   const handleSearchUser = useCallback(
     _.debounce(async (searchTerm) => {
       try {
@@ -138,23 +177,22 @@ const HomePage = ({ ischat }) => {
   // socket connection
 
   useEffect(() => {
-    const socketConnection = io(import.meta.env.VITE_BACKEND_URL,{
-      auth:{
-        token : localStorage.getItem('token')
-      }
-    })
+    const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+    });
 
-    socketConnection.on('onlineUser',(data)=>{
-      console.log(data)
-      dispatch(setOnlineUser(data))
-      
-    })
+    socketConnection.on("onlineUser", (data) => {
+      console.log(data);
+      dispatch(setOnlineUser(data));
+    });
 
-    dispatch(setsocketConnection(socketConnection))
-    
-    return()=>{
-      socketConnection.disconnect()
-    }
+    dispatch(setsocketConnection(socketConnection));
+
+    return () => {
+      socketConnection.disconnect();
+    };
   }, []);
 
   return (
@@ -184,7 +222,12 @@ const HomePage = ({ ischat }) => {
                 title={user.name}
                 className="btn-profile"
               >
-                <Avatar width={30} height={30} imageURL={user.profile_pic} userId={user._id} />
+                <Avatar
+                  width={30}
+                  height={30}
+                  imageURL={user.profile_pic}
+                  userId={user._id}
+                />
               </button>
               <i
                 title="logout"
@@ -204,20 +247,47 @@ const HomePage = ({ ischat }) => {
                   <p>Explore users to start a conversation with.</p>
                 </div>
               ) : (
-                ""
+                
+                allUsers.map((conv, index) => {
+                  return(
+                    <>
+                    <div className="sidebar-user-section" key={conv?._id}>
+                      <div className="sidebar-image">
+                        <Avatar imageURL={conv?.userDetails?.profile_pic} width={45} height={45}/>
+                      </div>
+                      <div className="name-msg-content">
+                        <h2>{conv?.userDetails?.name}</h2>
+                        {conv?.lastMsg?.imageUrl && <div className="sidebar-msg-image"><i class="fa-solid fa-camera"></i> <p>Image</p> </div>}
+                        {conv?.lastMsg?.videoUrl && <p className="sidebar-msg-image"><i class="fa-solid fa-video"></i> Video</p>}
+                        <p>{conv?.lastMsg?.text}</p>
+                        {/* <p>{conv?.userDetails?.lastMsg?.text}</p> */}
+                      </div>
+                      <div className="sidebar-date-section">
+                        <p className="date-sidebar">{moment(conv?.lastMsg?.updatedAt).format('LT')}</p>
+                        {conv?.UnseenMsg !== 0 && <p className="Unread">{conv?.UnseenMsg}</p>}
+                        
+                      </div>
+                    </div>
+                    {/* <hr className="side-bar-hr" /> */}
+                    </>
+                  )
+                })
               )}
             </div>
           </div>
         </div>
-        {!ischat ? <div className="message-section">
-          <div className="message-container">
-            <div className="message-wraper">
-              <img src={messagelogo} alt="logo" />
-              <p>Select user to send message</p>
+        {!ischat ? (
+          <div className="message-section">
+            <div className="message-container">
+              <div className="message-wraper">
+                <img src={messagelogo} alt="logo" />
+                <p>Select user to send message</p>
+              </div>
             </div>
           </div>
-        </div>: <MessagePage/>}
-        
+        ) : (
+          <MessagePage />
+        )}
       </div>
 
       <Modal
