@@ -85,11 +85,34 @@ const HomePage = ({ ischat }) => {
   }, [socketConnection, user]);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      fetchUserDetails();
-    } else if (!localStorage.getItem("token")) {
-      navigate("/checkemailpage");
-    }
+    const checkToken = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/check-token`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (response.data.success) {
+            // Token is valid, you can fetch user details here if needed
+            fetchUserDetails();
+          } else {
+            // Token is invalid or expired
+            navigate("/checkemailpage");
+          }
+        } catch (error) {
+          // Handle error, token is likely invalid or expired
+          console.error("Token validation failed:", error);
+          navigate("/checkemailpage");
+        }
+      } else {
+        navigate("/checkemailpage");
+      }
+    };
+
+    checkToken();
   }, []);
 
   const handleSearchUser = useCallback(

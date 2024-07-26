@@ -49,14 +49,10 @@ const MessagePage = () => {
 
       socketConnection.on("message-user", (data) => {
         setuserdata(data);
-        // console.log("User data received:", data);
       });
       socketConnection.on("message", (data) => {
-        console.log("Data Messages:", data);
         setallMessages(data);
-        // Emit seen event whenever a new message is received
-        // socketConnection.emit("seen", params.userId);
-        // console.log("Message data", data);
+        
       });
     }
     return () => {
@@ -65,7 +61,7 @@ const MessagePage = () => {
         socketConnection.off("message");
       }
     };
-  }, [socketConnection, params.userId, user]);
+  }, [socketConnection, user, allMessages]);
 
   // ----------------------------------------
   // ---- Form Handling ----------------------
