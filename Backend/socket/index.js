@@ -65,6 +65,7 @@ io.on("connection", async (socket) => {
 
       // get previous message
       socket.emit("message", getConversationMessage?.messages || []);
+      
     });
 
     //new message
@@ -86,7 +87,7 @@ io.on("connection", async (socket) => {
         conversation = await createConversation.save();
       }
 
-      const message = await MessageModel({
+      const message = new MessageModel({
         text: data.text,
         imageUrl: data.imageURL,
         videoUrl: data.videoURL,
@@ -113,27 +114,24 @@ io.on("connection", async (socket) => {
         .populate("messages")
         .sort({ updatedAt: -1 });
 
-      io.to(data?.sender).emit(
-        "message",
-        getConversationMessage?.messages || []
-      );
-      io.to(data?.receiver).emit(
-        "message",
-        getConversationMessage?.messages || []
-      );
+      io.to(data?.sender).emit("message", getConversationMessage?.messages || []);
+      io.to(data?.receiver).emit("message",getConversationMessage?.messages || []);
 
+      
       // send latest conversation
       const convsersationSender = await GetConvsersation(data?.sender);
       const convsersationReciever = await GetConvsersation(data?.receiver);
 
       io.to(data?.sender).emit("sideBarConversation", convsersationSender);
       io.to(data?.receiver).emit("sideBarConversation", convsersationReciever);
+      
     });
 
     // side bar messages
     socket.on("sidebar", async (CurrentUserId) => {
       console.log("Side Bar Id: ", CurrentUserId);
       const convsersation = await GetConvsersation(CurrentUserId);
+      // console.log(convsersation)
       socket.emit("sideBarConversation", convsersation);
     });
 

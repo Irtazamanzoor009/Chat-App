@@ -3,7 +3,7 @@ const { ConversationModel } = require("../Models/ConversationModel");
 const GetConversation = async (CurrentUserId) => {
   if (CurrentUserId) {
     const CurrentUserConversations = await ConversationModel.find({
-      $or: [{ sender: CurrentUserId }, { reciever: CurrentUserId }],
+      $or: [{ sender: CurrentUserId }, { receiver: CurrentUserId }],
     })
       .sort({ updatedAt: -1 })
       .populate("messages")

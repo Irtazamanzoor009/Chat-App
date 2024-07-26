@@ -26,7 +26,6 @@ const HomePage = ({ ischat }) => {
     (state) => state?.user?.socketConnection
   );
   const user = useSelector((state) => state.user);
-  // console.log(user)
   const [InfoData, setInfoData] = useState({
     name: "",
     profile_pic: "",
@@ -34,27 +33,30 @@ const HomePage = ({ ischat }) => {
   const [showProfileInfo, setshowProfileInfo] = useState(false);
   const [viewUsers, setviewUsers] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   // all users in message section
   const [allUsers, setallUsers] = useState([]);
   // all users in search menu
   const [userlist, setuserlist] = useState([]);
+
   const [search, setsearch] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogOut = ()=>{
-    dispatch(logout())
-    navigate('/checkemailpage')
-    toast.success("User Log Out Successfully")
-    localStorage.clear()
-  }
+  const handleLogOut = () => {
+    dispatch(logout());
+    navigate("/checkemailpage");
+    toast.success("User Log Out Successfully");
+    localStorage.clear();
+  };
 
   useEffect(() => {
     if (socketConnection) {
       socketConnection.emit("sidebar", user._id);
+
       socketConnection.on("sideBarConversation", (allMessages) => {
-        console.log("Side bar messages:::", allMessages);
+        // console.log("Side bar messages:::", allMessages);
         const ConversationData = allMessages.map((ConversationUser, index) => {
           if (
             ConversationUser?.sender?._id === ConversationUser?.receiver?._id
@@ -75,12 +77,63 @@ const HomePage = ({ ischat }) => {
             };
           }
         });
-        console.log("COnversation Data: ", ConversationData);
+        // console.log("COnversation Data: ", ConversationData);
         // console.log("Conversation Last Msg:",ConversationData?.lastMsg)
         setallUsers(ConversationData);
       });
     }
-  }, [socketConnection, user, allUsers]);
+  }, [socketConnection, user]);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      fetchUserDetails();
+    } else if (!localStorage.getItem("token")) {
+      navigate("/checkemailpage");
+    }
+  }, []);
+
+  const handleSearchUser = useCallback(
+    _.debounce(async (searchTerm) => {
+      try {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/api/search-user`;
+        const response = await axios.post(url, { search: searchTerm });
+
+        setuserlist(response?.data?.data);
+      } catch (error) {
+        toast.error(error?.response?.data?.message);
+      }
+    }, 300),
+    [] // 300 ms debounce delay
+  );
+
+  useEffect(() => {
+    handleSearchUser(search);
+  }, [search, handleSearchUser]); 
+
+  // socket connection
+
+  useEffect(() => {
+    const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+    });
+
+    socketConnection.on("onlineUser", (data) => {
+      // console.log(data);
+      dispatch(setOnlineUser(data));
+    });
+
+    dispatch(setsocketConnection(socketConnection));
+
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, []);
+
+  //-------------------------
+  // form handling functions
+  // -------------------------
 
   const fetchUserDetails = async () => {
     try {
@@ -98,17 +151,6 @@ const HomePage = ({ ischat }) => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    if(localStorage.getItem('token'))
-    {
-      fetchUserDetails();
-    }
-    else if(!localStorage.getItem('token'))
-    {
-      navigate('/checkemailpage')
-    }
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -170,44 +212,7 @@ const HomePage = ({ ischat }) => {
     setsearch(value);
   };
 
-  const handleSearchUser = useCallback(
-    _.debounce(async (searchTerm) => {
-      try {
-        const url = `${import.meta.env.VITE_BACKEND_URL}/api/search-user`;
-        const response = await axios.post(url, { search: searchTerm });
-
-        setuserlist(response?.data?.data);
-      } catch (error) {
-        toast.error(error?.response?.data?.message);
-      }
-    }, 300),
-    [] // 300 ms debounce delay
-  );
-
-  useEffect(() => {
-    handleSearchUser(search);
-  }, [search, handleSearchUser]);
-
-  // socket connection
-
-  useEffect(() => {
-    const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
-      auth: {
-        token: localStorage.getItem("token"),
-      },
-    });
-
-    socketConnection.on("onlineUser", (data) => {
-      console.log(data);
-      dispatch(setOnlineUser(data));
-    });
-
-    dispatch(setsocketConnection(socketConnection));
-
-    return () => {
-      socketConnection.disconnect();
-    };
-  }, []);
+  
 
   return (
     <>
@@ -243,7 +248,8 @@ const HomePage = ({ ischat }) => {
                   userId={user._id}
                 />
               </button>
-              <i onClick={handleLogOut}
+              <i
+                onClick={handleLogOut}
                 title="logout"
                 className="icon fa-solid fa-left-from-bracket"
               ></i>

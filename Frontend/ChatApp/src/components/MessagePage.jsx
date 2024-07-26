@@ -18,15 +18,6 @@ const MessagePage = () => {
   const currentMessage = useRef(null);
   const [allMessages, setallMessages] = useState([]);
 
-  useEffect(() => {
-    if (currentMessage.current) {
-      currentMessage.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
-  }, [allMessages]);
-
   const [userdata, setuserdata] = useState({
     _id: "",
     name: "",
@@ -42,21 +33,43 @@ const MessagePage = () => {
   });
 
   useEffect(() => {
+    if (currentMessage.current) {
+      currentMessage.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [allMessages]);
+
+  useEffect(() => {
     if (socketConnection && params.userId) {
       socketConnection.emit("messagepage", params.userId);
 
-      socketConnection.emit('seen',params.userId)
+      socketConnection.emit("seen", params.userId);
 
       socketConnection.on("message-user", (data) => {
         setuserdata(data);
-        console.log("User data received:", data);
+        // console.log("User data received:", data);
       });
       socketConnection.on("message", (data) => {
+        console.log("Data Messages:", data);
         setallMessages(data);
-        console.log("Message data", data);
+        // Emit seen event whenever a new message is received
+        // socketConnection.emit("seen", params.userId);
+        // console.log("Message data", data);
       });
     }
+    return () => {
+      if (socketConnection) {
+        socketConnection.off("message-user");
+        socketConnection.off("message");
+      }
+    };
   }, [socketConnection, params.userId, user]);
+
+  // ----------------------------------------
+  // ---- Form Handling ----------------------
+  // -----------------------------------------
 
   const handleplusClicked = () => {
     setplusClicked(!plusClicked);
@@ -67,7 +80,7 @@ const MessagePage = () => {
 
     setIsLoading(true);
     const uploadPhoto = await UploadFile(file);
-    console.log(uploadPhoto.url);
+    // console.log(uploadPhoto.url);
     setmessage((prev) => {
       return {
         ...prev,
@@ -189,7 +202,7 @@ const MessagePage = () => {
                   </div>
                   <p className="msg-text">{msg.text}</p>
                   <p className="message-sent-date">
-                    {moment(msg.createdAt).format('LT')}
+                    {moment(msg.createdAt).format("LT")}
                   </p>
                 </div>
               );
