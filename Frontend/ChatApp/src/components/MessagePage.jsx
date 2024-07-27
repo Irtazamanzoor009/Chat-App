@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import Avatar from "./Avatar";
 import UploadFile from "../helpers/uploadFile";
 import moment from "moment";
+import DoubleTick from "./DoubleTick";
+import SingleTick from "./SingleTick";
 
 const MessagePage = () => {
   const params = useParams();
@@ -17,6 +19,7 @@ const MessagePage = () => {
   const [IsLoading, setIsLoading] = useState(false);
   const currentMessage = useRef(null);
   const [allMessages, setallMessages] = useState([]);
+  const [msgSeen, setmsgSeen] = useState(false);
 
   const [userdata, setuserdata] = useState({
     _id: "",
@@ -52,9 +55,10 @@ const MessagePage = () => {
       });
       socketConnection.on("message", (data) => {
         setallMessages(data);
-        
+        // console.log(data)
       });
     }
+
     return () => {
       if (socketConnection) {
         socketConnection.off("message-user");
@@ -199,6 +203,14 @@ const MessagePage = () => {
                   <p className="msg-text">{msg.text}</p>
                   <p className="message-sent-date">
                     {moment(msg.createdAt).format("LT")}
+                    {user._id === msg.msgByUserId && (
+                      <p>
+                        {(msg.seen && userdata.online) && <DoubleTick color={"blue"}/>}
+                        {(msg.seen && !userdata.online) && <DoubleTick color={"blue"}/>}
+                        {(!msg.seen && !userdata.online) && <SingleTick/>}
+                        {(!msg.seen && userdata.online) && <DoubleTick color={"#5f6368"}/>}
+                      </p>
+                    )}
                   </p>
                 </div>
               );

@@ -327,7 +327,7 @@ const HomePage = ({ ischat }) => {
                             </div>
                             <div className="sidebar-date-section">
                               <p className="date-sidebar">
-                                {moment(conv?.lastMsg?.updatedAt).format("LT")}
+                                {moment(conv?.lastMsg?.createdAt).format("LT")}
                               </p>
                               {conv?.UnseenMsg !== 0 && (
                                 <p className="Unread">{conv?.UnseenMsg}</p>

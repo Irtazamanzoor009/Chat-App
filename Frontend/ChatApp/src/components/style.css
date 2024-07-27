@@ -387,3 +387,28 @@ header {
     background-color: #d9fdd3;
     /* width: 50%; */
 }
+
+.tick-class
+{
+  font-size: 8px;
+  font-weight: 700;
+  margin-left: 2px;
+  /* background-color: red; */
+  
+}
+
+.blue-tick svg
+{
+  color: blue;
+  
+}
+
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+

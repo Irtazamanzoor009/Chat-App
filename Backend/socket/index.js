@@ -163,6 +163,8 @@ io.on("connection", async (socket) => {
       io.to(msgByUserId).emit("sideBarConversation", convsersationReciever);
     });
 
+    
+
     // Handle disconnect event
     socket.on("disconnect", () => {
       console.log("Disconnect user", socket.id);
