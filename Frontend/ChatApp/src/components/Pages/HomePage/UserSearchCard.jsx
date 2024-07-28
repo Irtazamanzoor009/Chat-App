@@ -14,7 +14,7 @@ const UserSearchCard = ({userId, user, onclose }) => {
           </div>
           <div className="search-content">
             <p className="search-user-name">{user.name}</p>
-            <p>{user.email}</p>
+            <p className="search-user-email">{user.email}</p>
           </div>
         </Link>
       </div>

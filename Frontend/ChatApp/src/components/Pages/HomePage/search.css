@@ -30,3 +30,20 @@
 
 }
 
+@media(max-width: 550px)
+{
+    .search-image
+    {
+        margin-right: 10px;
+    }
+    .search-user-name
+    {
+        font-size: 15px;
+    }   
+    .search-user-email
+    {
+        font-size: 13px;
+        font-weight: 480;
+    }
+}
+

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./style.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import messagelogo from "../assets/message logo.png";
 import { useSelector } from "react-redux";
 import Avatar from "./Avatar";
@@ -8,6 +8,7 @@ import UploadFile from "../helpers/uploadFile";
 import moment from "moment";
 import DoubleTick from "./DoubleTick";
 import SingleTick from "./SingleTick";
+
 
 const MessagePage = () => {
   const params = useParams();
@@ -19,7 +20,6 @@ const MessagePage = () => {
   const [IsLoading, setIsLoading] = useState(false);
   const currentMessage = useRef(null);
   const [allMessages, setallMessages] = useState([]);
-  const [msgSeen, setmsgSeen] = useState(false);
 
   const [userdata, setuserdata] = useState({
     _id: "",
@@ -35,12 +35,15 @@ const MessagePage = () => {
     videoUrl: "",
   });
 
+  const [initialLoad, setInitialLoad] = useState(true);
+
   useEffect(() => {
     if (currentMessage.current) {
       currentMessage.current.scrollIntoView({
         behavior: "smooth",
         block: "end",
       });
+      // setInitialLoad(false);
     }
   }, [allMessages]);
 
@@ -144,11 +147,20 @@ const MessagePage = () => {
     }
   };
 
+  const navigate = useNavigate();
+
+  const handleBackClick = ()=>{
+    navigate('/')
+  }
+
   return (
     <>
       <div className="message-main">
         <header>
           <div className="user-detail">
+            <div className="back-icon">
+              <i onClick={handleBackClick} class="fa-solid fa-arrow-left"></i>
+            </div>
             <div className="image">
               <Avatar
                 width={40}
@@ -170,49 +182,69 @@ const MessagePage = () => {
             <i class="fa-solid fa-ellipsis-vertical"></i>
           </div>
         </header>
-        <section className="chat-section">
+        <section className="chat-section"  >
           {/* all messages */}
-          <div className="messages-section" ref={currentMessage}>
+          <div className="messages-section" ref={currentMessage} >
             {allMessages.map((msg, index) => {
               return (
                 <div
+                  key={index}
                   className={`message-strip ${
                     user._id === msg.msgByUserId ? "msg-by-sender" : ""
                   }`}
                 >
-                  <div>
-                    {msg?.imageUrl && (
-                      <img
-                        src={msg.imageUrl}
-                        alt="image"
-                        width={300}
-                        height={300}
-                      />
-                    )}
+                  <div >
+                    <div>
+                      {msg?.imageUrl && (
+                        <img
+                          src={msg.imageUrl}
+                          alt="image"
+                          width={250}
+                          height={300}
+                        />
+                      )}
+                    </div>
+                    <div>
+                      {msg?.videoUrl && (
+                        <video
+                          src={msg.videoUrl}
+                          width={250}
+                          height={300}
+                          controls
+                          muted
+                        ></video>
+                      )}
+                    </div>
+                    <p className="msg-text">{msg.text}</p>
+                    <p className="message-sent-date">
+                      {moment(msg.createdAt).format("LT")}
+                      {user._id === msg.msgByUserId && (
+                        <p>
+                          {msg.seen && userdata.online && (
+                            <DoubleTick
+                              coordinates={"0 -800 960 760"}
+                              color={"blue"}
+                            />
+                          )}
+                          {msg.seen && !userdata.online && (
+                            <DoubleTick
+                              coordinates={"0 -800 960 760"}
+                              color={"blue"}
+                            />
+                          )}
+                          {!msg.seen && !userdata.online && (
+                            <SingleTick coordinates={"0 -750 960 760"} />
+                          )}
+                          {!msg.seen && userdata.online && (
+                            <DoubleTick
+                              coordinates={"0 -800 960 760"}
+                              color={"#5f6368"}
+                            />
+                          )}
+                        </p>
+                      )}
+                    </p>
                   </div>
-                  <div>
-                    {msg?.videoUrl && (
-                      <video
-                        src={msg.videoUrl}
-                        width={300}
-                        height={300}
-                        controls
-                        muted
-                      ></video>
-                    )}
-                  </div>
-                  <p className="msg-text">{msg.text}</p>
-                  <p className="message-sent-date">
-                    {moment(msg.createdAt).format("LT")}
-                    {user._id === msg.msgByUserId && (
-                      <p>
-                        {(msg.seen && userdata.online) && <DoubleTick coordinates={"0 -800 960 760"} color={"blue"}/>}
-                        {(msg.seen && !userdata.online) && <DoubleTick coordinates={"0 -800 960 760"} color={"blue"}/>}
-                        {(!msg.seen && !userdata.online) && <SingleTick coordinates={"0 -750 960 760"} /> }
-                        {(!msg.seen && userdata.online) && <DoubleTick coordinates={"0 -800 960 760"} color={"#5f6368"}/>}
-                      </p>
-                    )}
-                  </p>
                 </div>
               );
             })}

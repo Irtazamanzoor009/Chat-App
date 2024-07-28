@@ -52,7 +52,6 @@ const HomePage = ({ ischat }) => {
     toast.success("User Log Out Successfully");
     localStorage.clear();
   };
-  
 
   useEffect(() => {
     if (socketConnection) {
@@ -85,7 +84,7 @@ const HomePage = ({ ischat }) => {
             };
           }
         });
-        console.log("COnversation Data: ", ConversationData);
+        // console.log("COnversation Data: ", ConversationData);
         // console.log("Conversation:",ConversationData.UnseenMsg)
         setallUsers(ConversationData);
       });
@@ -246,14 +245,45 @@ const HomePage = ({ ischat }) => {
     setsearch(value);
   };
 
+  const [ViewMessagePage, setViewMessagePage] = useState(true);
+  const [ViewChatPage, setViewChatPage] = useState(false);
+
+  const handleMessageSectionUserClick = () => {
+    if (window.innerWidth <= 550) {
+      setViewMessagePage(false);
+      setViewChatPage(true);
+      console.log("View Message Page: ", ViewMessagePage)
+      console.log("View Chat Page: ", ViewChatPage)
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 550) {
+        setViewChatPage(false);
+        setViewMessagePage(true)
+      } else if(window.innerWidth > 550) {
+        setViewChatPage(true);
+        setViewMessagePage(true);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <>
       <div className="main-cointainer">
-        <div className="main">
+        <div
+          className={`main ${
+            ViewMessagePage ? "show-message-page" : "block-message-page"
+          }`}
+        >
           <div className="side-icon">
             <div className="upper">
               <NavLink
-                to="/chat"
+                to="/"
                 className={({ isActive }) =>
                   `icon  ${isActive ? "active" : ""}`
                 }
@@ -264,7 +294,7 @@ const HomePage = ({ ischat }) => {
               <i
                 title="Add User"
                 onClick={() => setviewUsers(true)}
-                className=" fa-solid fa-user-plus"
+                className="fa-solid fa-user-plus"
               ></i>
             </div>
             <div className="below">
@@ -305,12 +335,14 @@ const HomePage = ({ ischat }) => {
                       <div className="sidebar-nav">
                         <NavLink
                           to={"/" + conv?.userDetails?._id}
+                          onClick={handleMessageSectionUserClick}
                           className="sidebar-user-section"
                           key={conv?._id}
                         >
-                          <div className="sidebar-parent">
+                          <div  className="sidebar-parent">
                             <div className="sidebar-image">
                               <Avatar
+                                userId={conv?.userDetails?._id}
                                 imageURL={conv?.userDetails?.profile_pic}
                                 width={45}
                                 height={45}
@@ -318,68 +350,84 @@ const HomePage = ({ ischat }) => {
                             </div>
                             <div className="name-msg-content">
                               <h2>{conv?.userDetails?.name}</h2>
-                              {conv?.lastMsg?.imageUrl && (
-                                <div className="sidebar-msg-image">
-                                  <i class="fa-solid fa-camera"></i>{" "}
-                                  <p>Image</p>{" "}
+                              <div className="interior-content">
+                                {user._id === conv?.lastMsg?.msgByUserId && (
+                                  <>
+                                    {conv?.lastMsg?.seen &&
+                                      onlineUsers.includes(
+                                        conv?.userDetails?._id
+                                      ) && (
+                                        <DoubleTick
+                                          coordinates={"0 -1000 960 760"}
+                                          className="fff"
+                                          color={"blue"}
+                                        />
+                                      )}
+
+                                    {conv?.lastMsg?.seen &&
+                                      !onlineUsers.includes(
+                                        conv?.userDetails?._id
+                                      ) && (
+                                        <DoubleTick
+                                          coordinates={"0 -1000 960 760"}
+                                          color={"blue"}
+                                        />
+                                      )}
+
+                                    {!conv?.lastMsg?.seen &&
+                                      !onlineUsers.includes(
+                                        conv?.userDetails?._id
+                                      ) && (
+                                        <SingleTick
+                                          coordinates={"0 -1000 960 760"}
+                                        />
+                                      )}
+
+                                    {!conv?.lastMsg?.seen &&
+                                      onlineUsers.includes(
+                                        conv?.userDetails?._id
+                                      ) && (
+                                        <DoubleTick
+                                          coordinates={"0 -1000 960 760"}
+                                          color={"#5f6368"}
+                                        />
+                                      )}
+                                  </>
+                                )}
+
+                                {conv?.lastMsg?.imageUrl && (
+                                  <div className="sidebar-msg-image">
+                                    <i class="fa-solid fa-camera"></i>{" "}
+                                    <p>
+                                      {conv?.lastMsg?.text
+                                        ? conv?.lastMsg?.text
+                                        : "Image"}
+                                    </p>{" "}
+                                  </div>
+                                )}
+                                {conv?.lastMsg?.videoUrl && (
+                                  <div className="sidebar-msg-image">
+                                    <i class="fa-solid fa-video"></i>
+                                    <p>
+                                      {conv?.lastMsg?.text
+                                        ? conv?.lastMsg?.text
+                                        : "Video"}
+                                    </p>{" "}
+                                  </div>
+                                )}
+                                {/* -------------------------- */}
+                                <div className="text-msg-shown">
+                                  <p className="side-bar-check">
+                                    {!conv?.lastMsg?.imageUrl &&
+                                      !conv?.lastMsg?.videoUrl &&
+                                      ((conv?.lastMsg?.text).length > 20
+                                        ? (conv?.lastMsg?.text).substring(
+                                            0,
+                                            20
+                                          ) + "..."
+                                        : conv?.lastMsg?.text)}
+                                  </p>
                                 </div>
-                              )}
-                              {conv?.lastMsg?.videoUrl && (
-                                <p className="sidebar-msg-image">
-                                  <i class="fa-solid fa-video"></i> Video
-                                </p>
-                              )}
-                              {/* -------------------------- */}
-                              <div className="text-msg-shown">
-                                <p className="side-bar-check">
-                                  {user._id === conv?.lastMsg?.msgByUserId && (
-                                    <>
-                                      {conv?.lastMsg?.seen &&
-                                        onlineUsers.includes(
-                                          conv?.userDetails?._id
-                                        ) && (
-                                          <DoubleTick
-                                            coordinates={"0 -1000 960 760"}
-                                            className="fff"
-                                            color={"blue"}
-                                          />
-                                        )}
-
-                                      {conv?.lastMsg?.seen &&
-                                        !onlineUsers.includes(
-                                          conv?.userDetails?._id
-                                        ) && (
-                                          <DoubleTick
-                                            coordinates={"0 -1000 960 760"}
-                                            color={"blue"}
-                                          />
-                                        )}
-
-                                      {!conv?.lastMsg?.seen &&
-                                        !onlineUsers.includes(
-                                          conv?.userDetails?._id
-                                        ) && (
-                                          <SingleTick
-                                            coordinates={"0 -1000 960 760"}
-                                          />
-                                        )}
-
-                                      {!conv?.lastMsg?.seen &&
-                                        onlineUsers.includes(
-                                          conv?.userDetails?._id
-                                        ) && (
-                                          <DoubleTick
-                                            coordinates={"0 -1000 960 760"}
-                                            color={"#5f6368"}
-                                          />
-                                        )}
-                                    </>
-                                  )}
-                                  {(conv?.lastMsg?.text).length > 20
-                                    ? (conv?.lastMsg?.text).substring(0, 20) +
-                                      "..."
-                                    : conv?.lastMsg?.text}
-                                </p>
                               </div>
                               {/* <p>{conv?.userDetails?.lastMsg?.text}</p> */}
                             </div>
@@ -402,20 +450,27 @@ const HomePage = ({ ischat }) => {
             </div>
           </div>
         </div>
-        {!ischat ? (
-          <div className="message-section">
+
+        <div
+          className={`message-section ${
+            ViewChatPage ? "show-message-page" : "block-message-page"
+          }`}
+        >
+          {!ischat ? (
+            // <div className={`message-section ${ViewChatPage ? 'show-message-page' : 'block-message-page' }`}>
             <div className="message-container">
               <div className="message-wraper">
                 <img src={messagelogo} alt="logo" />
                 <p>Select user to send message</p>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="message-section">
+          ) : (
+            // </div>
+            // <div className={`message-section ${ViewChatPage ? 'show-message-page' : 'block-message-page' }`}>
             <MessagePage />
-          </div>
-        )}
+            // </div>
+          )}
+        </div>
       </div>
 
       <Modal

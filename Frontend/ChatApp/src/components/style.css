@@ -53,12 +53,12 @@ header {
 }
 .chat-section {
   flex-grow: 1;
+  /* overflow-x: hidden; */
   overflow-y: auto;
   background: url("../assets/wp.png");
   background-size: cover;
   background-position: center;
- 
-  
+
   /* padding: 20px; */
 }
 
@@ -91,21 +91,19 @@ header {
   justify-content: center;
 }
 
-.send-icon
-{
-    background-color: transparent;
-    color: #183153;
-    font-size: 20px;
-    margin-right: 10px;
-    margin-left: 10px;
-    display: flex;
-    align-items: center;
-    /* background-color: red; */
+.send-icon {
+  background-color: transparent;
+  color: #183153;
+  font-size: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  /* background-color: red; */
 }
 
-.send-icon:hover
-{
-    background-color: transparent;
+.send-icon:hover {
+  background-color: transparent;
 }
 
 .plus-icon {
@@ -248,10 +246,9 @@ header {
   /* background-color: red; */
 }
 
-.image-send-icon
-{
-    margin-left: 0px;
-    margin-right: 0px;
+.image-send-icon {
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .image-icon input {
@@ -355,61 +352,85 @@ header {
 
 /* Messages css */
 
-.messages-section
-{
-    /* background-color: red; */
-    padding: 20px;
+.messages-section {
+  padding: 20px;
+  /* background-color: blueviolet; */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.message-strip
-{
-    background-color: white;
-    margin-top: 10px;
-    width: fit-content;
-    padding: 5px 10px;
-    border-radius: 10px;
-    /* width: 50%; */
+.message-strip {
+
+  background-color: white;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  max-width: 70%; /* Ensure the message only takes up 70% of the available space */
+  word-wrap: break-word;
 }
 
-.message-sent-date
-{
-    font-size: 10px;
-    color: gray;
-    /* background-color: yellow; */
-    display: flex;
-    justify-content: end;
-    margin-left: 30px;
+.message-sent-date {
+  font-size: 10px;
+  color: gray;
+  /* background-color: yellow; */
+  display: flex;
+  justify-content: end;
+  margin-left: 30px;
 }
 
-.msg-by-sender
-{
-    margin-left: auto;
-    background-color: #d9fdd3;
-    /* width: 50%; */
+.msg-by-sender {
+  margin-left: auto;
+  background-color: #d9fdd3;
+  max-width: 70%;
 }
 
-.tick-class
-{
+.msg-text {
+  white-space: pre-wrap;
+}
+
+.tick-class {
   /* font-size: -10px; */
   font-weight: 700;
   margin-left: 2px;
   background-color: red;
-  
 }
 
-.blue-tick svg
-{
+.blue-tick svg {
   color: blue;
-  
 }
-
 
 .material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
 
+.back-icon
+{
+  margin-right: 10px;
+  display: none;
+}
 
+@media(max-width: 510px)
+{
+  .back-icon
+  {
+    display: block;
+  }
+  .message-main
+  {
+    /* color: red; */
+    width: 100%;
+  }
+  .messages-section{
+    padding: 5px;
+    /* width: 100%; */
+    overflow-x: hidden;
+  }
+  .name-content p
+  {
+    font-size: 12px;
+  }
+  
+  
+
+}

@@ -465,3 +465,37 @@ h3 {
   justify-content: flex-start;
 }
 
+.interior-content
+{
+  display: flex;
+  flex-direction: row;
+}
+
+.show-message-page
+{
+  display: flex;
+}
+
+.block-message-page
+{
+  display: none;
+
+}
+
+@media(max-width: 550px)
+{
+  .main
+  {
+    width: 100%;
+  }
+  .side-icon
+  {
+    width: 12%;
+  }
+  /* .user-list
+  {
+    font-size: 13px;
+  } */
+  
+}
+
