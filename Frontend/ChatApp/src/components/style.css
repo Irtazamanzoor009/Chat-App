@@ -390,10 +390,10 @@ header {
 
 .tick-class
 {
-  font-size: 8px;
+  /* font-size: -10px; */
   font-weight: 700;
   margin-left: 2px;
-  /* background-color: red; */
+  background-color: red;
   
 }
 
@@ -411,4 +411,5 @@ header {
   'GRAD' 0,
   'opsz' 24
 }
+
 

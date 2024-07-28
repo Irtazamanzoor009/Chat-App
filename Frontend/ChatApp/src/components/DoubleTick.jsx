@@ -1,10 +1,10 @@
 import React from 'react';
 
-const DoubleTick = ({color}) => (
+const DoubleTick = ({color,coordinates}) => (
     <svg
     xmlns="http://www.w3.org/2000/svg"
     height="15px"
-    viewBox="0 -800 960 760"
+    viewBox={coordinates}
     width="24px"
     fill={color}
   >

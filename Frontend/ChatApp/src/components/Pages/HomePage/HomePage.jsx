@@ -11,7 +11,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "./homepage.css";
 import Avatar from "../../Avatar";
 import Modal from "./Modal";
-import { useForm } from "react-hook-form";
 import UploadFile from "../../../helpers/uploadFile";
 import toast from "react-hot-toast";
 import messagelogo from "../../../assets/message logo.png";
@@ -20,11 +19,14 @@ import _ from "lodash";
 import MessagePage from "../../MessagePage";
 import io from "socket.io-client";
 import moment from "moment";
+import DoubleTick from "../../DoubleTick";
+import SingleTick from "../../SingleTick";
 
 const HomePage = ({ ischat }) => {
   const socketConnection = useSelector(
     (state) => state?.user?.socketConnection
   );
+  const onlineUsers = useSelector((state) => state?.user?.onlineUser);
   const user = useSelector((state) => state.user);
   const [InfoData, setInfoData] = useState({
     name: "",
@@ -50,10 +52,16 @@ const HomePage = ({ ischat }) => {
     toast.success("User Log Out Successfully");
     localStorage.clear();
   };
+  
 
   useEffect(() => {
     if (socketConnection) {
       socketConnection.emit("sidebar", user._id);
+
+      // socketConnection.on("message", (data) => {
+      //   dispatch(setAllMessages(data))
+      //   console.log(AllMessages)
+      // });
 
       socketConnection.on("sideBarConversation", (allMessages) => {
         // console.log("Side bar messages:::", allMessages);
@@ -77,8 +85,8 @@ const HomePage = ({ ischat }) => {
             };
           }
         });
-        // console.log("COnversation Data: ", ConversationData);
-        // console.log("Conversation Last Msg:",ConversationData?.lastMsg)
+        console.log("COnversation Data: ", ConversationData);
+        // console.log("Conversation:",ConversationData.UnseenMsg)
         setallUsers(ConversationData);
       });
     }
@@ -89,11 +97,14 @@ const HomePage = ({ ischat }) => {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/check-token`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
+          const response = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/api/check-token`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
-          });
+          );
 
           if (response.data.success) {
             // Token is valid, you can fetch user details here if needed
@@ -126,12 +137,12 @@ const HomePage = ({ ischat }) => {
         toast.error(error?.response?.data?.message);
       }
     }, 300),
-    [] // 300 ms debounce delay
+    [userlist] // 300 ms debounce delay
   );
 
   useEffect(() => {
     handleSearchUser(search);
-  }, [search, handleSearchUser]); 
+  }, [search, handleSearchUser]);
 
   // socket connection
 
@@ -235,8 +246,6 @@ const HomePage = ({ ischat }) => {
     setsearch(value);
   };
 
-  
-
   return (
     <>
       <div className="main-cointainer">
@@ -320,9 +329,58 @@ const HomePage = ({ ischat }) => {
                                   <i class="fa-solid fa-video"></i> Video
                                 </p>
                               )}
-                              <p className="text-msg-shown">
-                                {conv?.lastMsg?.text}
-                              </p>
+                              {/* -------------------------- */}
+                              <div className="text-msg-shown">
+                                <p className="side-bar-check">
+                                  {user._id === conv?.lastMsg?.msgByUserId && (
+                                    <>
+                                      {conv?.lastMsg?.seen &&
+                                        onlineUsers.includes(
+                                          conv?.userDetails?._id
+                                        ) && (
+                                          <DoubleTick
+                                            coordinates={"0 -1000 960 760"}
+                                            className="fff"
+                                            color={"blue"}
+                                          />
+                                        )}
+
+                                      {conv?.lastMsg?.seen &&
+                                        !onlineUsers.includes(
+                                          conv?.userDetails?._id
+                                        ) && (
+                                          <DoubleTick
+                                            coordinates={"0 -1000 960 760"}
+                                            color={"blue"}
+                                          />
+                                        )}
+
+                                      {!conv?.lastMsg?.seen &&
+                                        !onlineUsers.includes(
+                                          conv?.userDetails?._id
+                                        ) && (
+                                          <SingleTick
+                                            coordinates={"0 -1000 960 760"}
+                                          />
+                                        )}
+
+                                      {!conv?.lastMsg?.seen &&
+                                        onlineUsers.includes(
+                                          conv?.userDetails?._id
+                                        ) && (
+                                          <DoubleTick
+                                            coordinates={"0 -1000 960 760"}
+                                            color={"#5f6368"}
+                                          />
+                                        )}
+                                    </>
+                                  )}
+                                  {(conv?.lastMsg?.text).length > 20
+                                    ? (conv?.lastMsg?.text).substring(0, 20) +
+                                      "..."
+                                    : conv?.lastMsg?.text}
+                                </p>
+                              </div>
                               {/* <p>{conv?.userDetails?.lastMsg?.text}</p> */}
                             </div>
                             <div className="sidebar-date-section">
@@ -354,7 +412,9 @@ const HomePage = ({ ischat }) => {
             </div>
           </div>
         ) : (
-          <MessagePage />
+          <div className="message-section">
+            <MessagePage />
+          </div>
         )}
       </div>
 
@@ -407,21 +467,23 @@ const HomePage = ({ ischat }) => {
             onChange={handlesearch}
           />
         </div>
-        <div className="user-list">
-          {userlist.length === 0 ? (
-            <div className="user-list-text">No User Present</div>
-          ) : (
-            userlist.map((user, index) => {
-              return (
-                <UserSearchCard
-                  key={user._id}
-                  user={user}
-                  userId={user._id}
-                  onclose={() => setviewUsers(false)}
-                />
-              );
-            })
-          )}
+        <div className="search-user-box">
+          <div className="user-list">
+            {userlist.length === 0 ? (
+              <div className="user-list-text">No User Present</div>
+            ) : (
+              userlist.map((user, index) => {
+                return (
+                  <UserSearchCard
+                    key={user._id}
+                    user={user}
+                    userId={user._id}
+                    onclose={() => setviewUsers(false)}
+                  />
+                );
+              })
+            )}
+          </div>
         </div>
       </Modal>
     </>

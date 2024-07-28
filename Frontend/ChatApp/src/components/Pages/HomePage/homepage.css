@@ -9,9 +9,7 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  /* background-color: red; */
-  /* width: 500px; */
-  width: 35%;
+  width: 40%;
 }
 
 .side-icon {
@@ -276,6 +274,13 @@ h3 {
     border-radius: 7px;
 }
 
+.search-user-box
+{
+  /* background-color: red; */
+  height: 50vh;
+  overflow-y: auto;
+}
+
 .search-user-form input:focus
 {
     border-color: #007d94;
@@ -307,14 +312,12 @@ h3 {
 
 .text-msg-shown
 {
+  /* font-size: 10px; */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
-  /* background-color: red; */
-  /* max-width: 50%; */
-  /* width: 100%; */
-  /* display: flex; */
+  display: flex;
+  
 }
 
 .name-msg-content h2
@@ -331,7 +334,7 @@ h3 {
   /* background-color: green; */
   display: flex;
   margin-left: 0px;
-  font-size: 13px;
+  font-size: 14px;
   margin-top: 0px;
   margin-bottom: 0px;
   /* margin-right: 0px; */
@@ -446,5 +449,19 @@ h3 {
 {
   font-size: 12px;
   font-weight: 600;
+}
+
+.side-bar-check .fff
+{
+  background-color: red;
+  /* width: 10px; */
+  /* margin-right: 0px; */
+}
+
+.last-msg-text
+{
+  background-color: green;
+  display: flex;
+  justify-content: flex-start;
 }
 

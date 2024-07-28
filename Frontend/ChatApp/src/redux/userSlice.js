@@ -7,7 +7,7 @@ const initialState = {
   profile_pic: "",
   token: "",
   onlineUser:[],
-  socketConnection: null
+  socketConnection: null,
 };
 
 export const userSlice = createSlice({
@@ -36,7 +36,8 @@ export const userSlice = createSlice({
     },
     setsocketConnection: (state,action)=>{
       state.socketConnection = action.payload
-    }
+    },
+    
   },
 });
 

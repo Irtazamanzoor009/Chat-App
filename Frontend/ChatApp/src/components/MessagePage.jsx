@@ -52,6 +52,7 @@ const MessagePage = () => {
 
       socketConnection.on("message-user", (data) => {
         setuserdata(data);
+        // console.log("user data: ",data)
       });
       socketConnection.on("message", (data) => {
         setallMessages(data);
@@ -205,10 +206,10 @@ const MessagePage = () => {
                     {moment(msg.createdAt).format("LT")}
                     {user._id === msg.msgByUserId && (
                       <p>
-                        {(msg.seen && userdata.online) && <DoubleTick color={"blue"}/>}
-                        {(msg.seen && !userdata.online) && <DoubleTick color={"blue"}/>}
-                        {(!msg.seen && !userdata.online) && <SingleTick/>}
-                        {(!msg.seen && userdata.online) && <DoubleTick color={"#5f6368"}/>}
+                        {(msg.seen && userdata.online) && <DoubleTick coordinates={"0 -800 960 760"} color={"blue"}/>}
+                        {(msg.seen && !userdata.online) && <DoubleTick coordinates={"0 -800 960 760"} color={"blue"}/>}
+                        {(!msg.seen && !userdata.online) && <SingleTick coordinates={"0 -750 960 760"} /> }
+                        {(!msg.seen && userdata.online) && <DoubleTick coordinates={"0 -800 960 760"} color={"#5f6368"}/>}
                       </p>
                     )}
                   </p>
