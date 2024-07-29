@@ -48,14 +48,16 @@ const MessagePage = () => {
   }, [allMessages]);
 
   useEffect(() => {
+    console.log("socket connection...............")
     if (socketConnection && params.userId) {
+      console.log("socket connection here...............")
       socketConnection.emit("messagepage", params.userId);
 
       socketConnection.emit("seen", params.userId);
 
       socketConnection.on("message-user", (data) => {
         setuserdata(data);
-        // console.log("user data: ",data)
+        console.log("user data: ",data)
       });
       socketConnection.on("message", (data) => {
         setallMessages(data);

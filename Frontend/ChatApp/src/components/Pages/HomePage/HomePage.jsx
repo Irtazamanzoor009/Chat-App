@@ -135,6 +135,7 @@ const HomePage = ({ ischat }) => {
         const response = await axios.post(url, { search: searchTerm });
 
         setuserlist(response?.data?.data);
+        // console.log(userlist)
       } catch (error) {
         toast.error(error?.response?.data?.message);
       }
