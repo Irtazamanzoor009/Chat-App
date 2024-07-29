@@ -110,14 +110,17 @@ const HomePage = ({ ischat }) => {
             fetchUserDetails();
           } else {
             // Token is invalid or expired
+            toast.error("token expired")
             navigate("/checkemailpage");
           }
         } catch (error) {
           // Handle error, token is likely invalid or expired
+          toast.error("token expired 1")
           console.error("Token validation failed:", error);
           navigate("/checkemailpage");
         }
       } else {
+        toast.error("token expired 33")
         navigate("/checkemailpage");
       }
     };
@@ -175,9 +178,11 @@ const HomePage = ({ ischat }) => {
         url: url,
         withCredentials: true,
       });
+      console.log(response)
       dispatch(setUser(response.data.data));
       if (response.data.data.logout) {
         dispatch(logout());
+        toast.error("j kjdk ")
         navigate("/checkemailpage");
       }
     } catch (error) {

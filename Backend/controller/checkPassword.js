@@ -29,7 +29,7 @@ const CheckPassword = async (req, res) => {
         email : checkUser.email
     }
 
-    const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY)
+    const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY,{expiresIn: '1d'})
 
     const cookieOptions = {
         http: true,
