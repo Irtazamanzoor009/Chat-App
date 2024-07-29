@@ -19,7 +19,7 @@ const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
     credentials: true,
-    optionsSuccessStatus:200
+    // optionsSuccessStatus:200
   },
 });
 
