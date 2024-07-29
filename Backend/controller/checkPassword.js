@@ -33,7 +33,8 @@ const CheckPassword = async (req, res) => {
 
     const cookieOptions = {
         http: true,
-        secure: true
+        secure: true,
+        sameSite: 'none',
     }
 
 
