@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 const RegisterPage = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
   const [serverError, setServerError] = useState("");
   const [fileName, setFileName] = useState("");
   const navigate = useNavigate();
@@ -54,12 +55,14 @@ const RegisterPage = () => {
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
+      setIsLoading2(true)
       setFileName(file ? file.name : "");
       try {
         const uploadPhoto = await UploadFile(file);
         setValue("profile_pic", uploadPhoto.secure_url, {
           shouldValidate: true,
         });
+        setIsLoading2(false)
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -119,9 +122,10 @@ const RegisterPage = () => {
               {fileName ? (
                 <div className="file-info">
                   <span className="file-name profie-text">{fileName}</span>
-                  <span className="remove-file" onClick={handleRemoveFile}>
+                  {!isLoading2 ? ( <span className="remove-file" onClick={handleRemoveFile}>
                     &times;
-                  </span>
+                  </span>) : <i className="fa-solid fa-spinner fa-spin"></i>}
+                  
                 </div>
               ) : (
                 <span className="profie-text">Upload Profile Photo</span>

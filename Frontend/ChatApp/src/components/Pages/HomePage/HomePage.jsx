@@ -115,12 +115,12 @@ const HomePage = ({ ischat }) => {
           }
         } catch (error) {
           // Handle error, token is likely invalid or expired
-          toast.error("token expired 1")
+          // toast.error("token expired 1")
           console.error("Token validation failed:", error);
           navigate("/checkemailpage");
         }
       } else {
-        toast.error("token expired 33")
+        // toast.error("token expired 33")
         navigate("/checkemailpage");
       }
     };
@@ -255,7 +255,7 @@ const HomePage = ({ ischat }) => {
   const [ViewChatPage, setViewChatPage] = useState(false);
 
   const handleMessageSectionUserClick = () => {
-    if (window.innerWidth <= 550) {
+    if (window.innerWidth <= 850) {
       setViewMessagePage(false);
       setViewChatPage(true);
       console.log("View Message Page: ", ViewMessagePage)
@@ -265,7 +265,7 @@ const HomePage = ({ ischat }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 550) {
+      if (window.innerWidth <= 850) {
         setViewChatPage(false);
         setViewMessagePage(true)
       } else if(window.innerWidth > 550) {
@@ -423,15 +423,14 @@ const HomePage = ({ ischat }) => {
                                 )}
                                 {/* -------------------------- */}
                                 <div className="text-msg-shown">
-                                  <p className="side-bar-check">
-                                    {!conv?.lastMsg?.imageUrl &&
+                                <p className="side-bar-check">
+                                    {conv?.lastMsg?.text &&
+                                      !conv?.lastMsg?.imageUrl &&
                                       !conv?.lastMsg?.videoUrl &&
-                                      ((conv?.lastMsg?.text).length > 20
-                                        ? (conv?.lastMsg?.text).substring(
-                                            0,
-                                            20
-                                          ) + "..."
-                                        : conv?.lastMsg?.text)}
+                                      (conv.lastMsg.text.length > 20
+                                        ? conv.lastMsg.text.substring(0, 20) +
+                                          "..."
+                                        : conv.lastMsg.text)}
                                   </p>
                                 </div>
                               </div>
