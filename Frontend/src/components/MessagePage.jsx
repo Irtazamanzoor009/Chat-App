@@ -369,7 +369,7 @@ const MessagePage = () => {
                     onChange={handleMessageInputBox}
                   />
                   <button className="send-icon">
-                    <i class="fa-solid fa-paper-plane-top"></i>
+                    <i class="fa-solid fa-paper-plane"></i>
                   </button>
                 </div>
               </form>

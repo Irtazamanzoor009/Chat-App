@@ -294,7 +294,7 @@ const HomePage = ({ ischat }) => {
                   `icon  ${isActive ? "active" : ""}`
                 }
               >
-                <i title="Chat" className="fa-solid fa-message-dots"></i>
+                <i title="Chat" className="fa-brands fa-rocketchat"></i>
               </NavLink>
 
               <i
@@ -319,7 +319,7 @@ const HomePage = ({ ischat }) => {
               <i
                 onClick={handleLogOut}
                 title="logout"
-                className="icon fa-solid fa-left-from-bracket"
+                className="icon fa-solid fa-arrow-right-from-bracket"
               ></i>
             </div>
           </div>
